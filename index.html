@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منظومة التدريب الإلكترونية - إدارة إدفو التعليمية</title>
+    <!-- Bootstrap 5 RTL CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts - Tajawal -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <!-- SheetJS for Excel Export & Import -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+    <style>
+        :root {
+            --primary-color: #1a4175;
+            --primary-hover: #112d53;
+            --secondary-color: #0d9488;
+            --bg-color: #f8fafc;
+            --card-border: #e2e8f0;
+            --accent-glow: rgba(26, 65, 117, 0.15);
+        }
+
+        body {
+            background-color: var(--bg-color);
+            font-family: 'Tajawal', sans-serif;
+            color: #334155;
+            padding-bottom: 60px;
+        }
+
+        .hero-header {
+            background: linear-gradient(135deg, #1a4175 0%, #0f2b52 100%);
+            color: white;
+            padding: 2.5rem 1.5rem;
+            border-radius: 1rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 25px -5px rgba(15, 43, 82, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-tabs-nav {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .main-tab-btn {
+            background-color: #ffffff;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+            padding: 0.75rem 2rem;
+            border-radius: 50rem;
+            font-weight: 700;
+            font-size: 1.05rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.04);
+        }
+
+        .main-tab-btn:hover, .main-tab-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 6px 12px rgba(26, 65, 117, 0.25);
+        }
+
+        .centered-actions-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid var(--card-border);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .card-custom {
+            background: white;
+            border-radius: 1rem;
+            border: 1px solid var(--card-border);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            margin-bottom: 2rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card-custom.editing-mode {
+            border: 2px solid var(--secondary-color);
+            box-shadow: 0 0 20px rgba(13, 148, 136, 0.25);
+        }
+
+        .card-custom-header {
+            background: white;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--card-border);
+            border-top-left-radius: 1rem !important;
+            border-top-right-radius: 1rem !important;
+            font-weight: 700;
+            color: var(--primary-color);
+            font-size: 1.15rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .btn-pro {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        .btn-pro-print { background-color: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; }
+        .btn-pro-print:hover { background-color: #e2e8f0; color: #0f172a; }
+
+        .btn-pro-excel { background-color: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+        .btn-pro-excel:hover { background-color: #dcfce7; color: #166534; }
+
+        .btn-pro-backup { background-color: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+        .btn-pro-backup:hover { background-color: #fef3c7; color: #92400e; }
+
+        .btn-pro-restore { background-color: #ecfeff; color: #0e7490; border: 1px solid #a5f3fc; }
+        .btn-pro-restore:hover { background-color: #cffafe; color: #155e75; }
+
+        .btn-pro-danger { background-color: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+        .btn-pro-danger:hover { background-color: #fee2e2; color: #b91c1c; }
+
+        .form-label { font-weight: 600; font-size: 0.88rem; color: #475569; margin-bottom: 0.4rem; }
+        .form-control, .form-select { border-radius: 0.5rem; padding: 0.6rem 0.8rem; border: 1px solid #cbd5e1; font-size: 0.95rem; }
+        .form-control:focus, .form-select:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px var(--accent-glow); }
+
+        .btn-primary-custom { background-color: var(--primary-color); color: white; border: none; padding: 0.75rem 2rem; border-radius: 0.5rem; font-weight: 700; transition: background-color 0.2s ease; }
+        .btn-primary-custom:hover { background-color: var(--primary-hover); color: white; }
+
+        .btn-update-custom { background-color: var(--secondary-color); color: white; border: none; padding: 0.75rem 2rem; border-radius: 0.5rem; font-weight: 700; }
+        .btn-update-custom:hover { background-color: #0f766e; color: white; }
+
+        .table-responsive { background: white; border-radius: 1rem; border: 1px solid var(--card-border); overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .custom-table { margin-bottom: 0; }
+        .custom-table thead { background-color: #f1f5f9; color: #334155; font-weight: 700; border-bottom: 2px solid #e2e8f0; }
+        .custom-table th, .custom-table td { padding: 0.85rem 0.75rem; vertical-align: middle; font-size: 0.9rem; }
+        .custom-table tbody tr:hover { background-color: #f8fafc; }
+
+        .badge-stage { background-color: #e0f2fe; color: #0369a1; font-weight: 600; padding: 0.35em 0.65em; border-radius: 0.375rem; }
+        .badge-type { background-color: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; font-weight: 600; }
+        .toast-container { position: fixed; bottom: 20px; left: 20px; z-index: 1090; }
+        .print-only-header { display: none; }
+
+        @media print {
+            body { background: white; color: black; padding: 0; }
+            .no-print { display: none !important; }
+            .card-custom, .table-responsive { border: none !important; box-shadow: none !important; }
+            .custom-table th, .custom-table td { border: 1px solid #000 !important; }
+            .print-only-header { display: block; text-align: center; margin-bottom: 20px; border-bottom: 2px solid #333; padding-bottom: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-4">
+    <div class="print-only-header">
+        <h5>جمهورية مصر العربية</h5>
+        <h5>وزارة التربية والتعليم والتعليم الفني</h5>
+        <h5>مديرية التربية والتعليم بمحافظة أسوان</h5>
+        <h5>إدارة إدفو التعليمية</h5>
+        <h5 id="printSectionTitle">التطوير التكنولوجي - سجلات التدريب</h5>
+        <p class="text-muted small mb-0">تاريخ الطباعة: <span id="printDate"></span></p>
+    </div>
+
+    <div class="hero-header text-center text-md-start no-print">
+        <h2 class="fw-bold mb-2"><i class="fa-solid fa-graduation-cap me-2"></i>منظومة التدريب الإلكترونية</h2>
+        <p class="mb-0 opacity-90 fs-6">
+            مديرية التربية والتعليم بمحافظة أسوان - إدارة إدفو التعليمية - قسم التطوير التكنولوجي
+        </p>
+    </div>
+
+    <!-- أزرار التبويبات الرئيسية -->
+    <div class="main-tabs-nav no-print">
+        <button id="teachersTabBtn" class="main-tab-btn active" onclick="switchTab('teachers')">
+            <i class="fa-solid fa-chalkboard-user me-2"></i>تدريبات المعلمين
+        </button>
+        <button id="studentsTabBtn" class="main-tab-btn" onclick="switchTab('students')">
+            <i class="fa-solid fa-user-graduate me-2"></i>تدريبات الطلاب
+        </button>
+    </div>
+
+    <!-- أزرار العمليات والتحكم المتمركزة -->
+    <div class="centered-actions-container no-print">
+        <button class="btn btn-pro btn-pro-print" onclick="preparePrint()" title="طباعة التقرير">
+            <i class="fa-solid fa-print"></i> طباعة
+        </button>
+        <button class="btn btn-pro btn-pro-excel" onclick="exportToExcel()" title="تصدير لملف Excel">
+            <i class="fa-solid fa-file-excel"></i> تصدير إكسل
+        </button>
+        <label class="btn btn-pro btn-pro-excel mb-0" style="cursor: pointer;" title="استيراد البيانات من ملف Excel">
+            <i class="fa-solid fa-file-import"></i> استيراد إكسل
+            <input type="file" id="importExcelFile" accept=".xlsx, .xls" style="display: none;" onchange="importFromExcel(event)">
+        </label>
+        <button class="btn btn-pro btn-pro-backup" onclick="exportBackupJSON()" title="حفظ نسخة احتياطية">
+            <i class="fa-solid fa-download"></i> حفظ نسخة احتياطية
+        </button>
+        <label class="btn btn-pro btn-pro-restore mb-0" style="cursor: pointer;" title="استرجاع البيانات">
+            <i class="fa-solid fa-upload"></i> استرجاع نسخة احتياطية
+            <input type="file" id="importFile" accept=".json" style="display: none;" onchange="importBackupJSON(event)">
+        </label>
+        <button class="btn btn-pro btn-pro-danger" onclick="clearAllData()" title="حذف جميع البيانات">
+            <i class="fa-solid fa-trash-alt"></i> حذف الكل
+        </button>
+        <button id="cancelEditBtn" class="btn btn-sm btn-outline-secondary d-none ms-2" onclick="cancelEditing()">
+            <i class="fa-solid fa-xmark me-1"></i> إغلاق التعديل
+        </button>
+    </div>
+
+    <!-- بطاقات الإحصائيات -->
+    <div class="row g-3 mb-4 no-print">
+        <div class="col-md-3 col-6">
+            <div class="stat-card d-flex align-items-center gap-3">
+                <div class="stat-icon bg-primary bg-opacity-10 text-primary"><i class="fa-solid fa-users"></i></div>
+                <div>
+                    <span class="text-muted fs-7 d-block" id="statTotalLabel">إجمالي المتدربين</span>
+                    <h4 class="fw-bold mb-0" id="statTotal">0</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-card d-flex align-items-center gap-3">
+                <div class="stat-icon bg-info bg-opacity-10 text-info"><i class="fa-solid fa-venus-mars"></i></div>
+                <div>
+                    <span class="text-muted fs-7 d-block">ذكور / إناث</span>
+                    <h5 class="fw-bold mb-0" id="statGender">0 / 0</h5>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-card d-flex align-items-center gap-3">
+                <div class="stat-icon bg-success bg-opacity-10 text-success"><i class="fa-solid fa-chalkboard-user"></i></div>
+                <div>
+                    <span class="text-muted fs-7 d-block">البرامج التدريبية</span>
+                    <h4 class="fw-bold mb-0" id="statPrograms">0</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="stat-card d-flex align-items-center gap-3">
+                <div class="stat-icon bg-warning bg-opacity-10 text-warning"><i class="fa-solid fa-school"></i></div>
+                <div>
+                    <span class="text-muted fs-7 d-block">المدارس المغطاة</span>
+                    <h4 class="fw-bold mb-0" id="statSchools">0</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نموذج الادخال -->
+    <div class="card-custom no-print" id="formCard">
+        <div class="card-custom-header">
+            <span id="formTitle"><i class="fa-solid fa-user-plus me-2 text-primary"></i>إضافة سجل تدريب جديد</span>
+        </div>
+        <div class="card-body p-4">
+            <form id="recordForm">
+                <input type="hidden" id="editRowId" value="">
+                
+                <h6 class="fw-bold text-primary mb-3"><i class="fa-solid fa-address-card me-2"></i>البيانات الأساسية وتفاصيل التدريب</h6>
+                
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <label class="form-label" id="labelName">الاسم العربي <span class="text-danger">*</span></label>
+                        <input type="text" id="arName" class="form-control" placeholder="أدخل الاسم بالعربية" oninput="this.value = this.value.replace(/[^\u0600-\u06FF\s]/g, '');" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">English Name <span class="text-danger">*</span></label>
+                        <input type="text" id="enName" class="form-control" placeholder="Full Name in English" oninput="this.value = this.value.replace(/[^a-zA-Z\s]/g, '');" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label" id="labelCode">كود المعلم <span class="text-danger">*</span></label>
+                        <input type="text" id="recordCode" class="form-control" placeholder="أدخل الكود" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">النوع <span class="text-danger">*</span></label>
+                        <select id="gender" class="form-select" required>
+                            <option value="" disabled selected>-- اختر النوع --</option>
+                            <option value="ذكر">ذكر</option>
+                            <option value="أنثى">أنثى</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">الرقم القومي <span class="text-danger">*</span></label>
+                        <input type="text" id="nationalId" class="form-control" maxlength="14" placeholder="الرقم القومي كامل" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">البريد الالكتروني</label>
+                        <input type="text" id="email" class="form-control" placeholder="name@domain.com">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">المحمول <span class="text-danger">*</span></label>
+                        <input type="tel" id="mobile" class="form-control" maxlength="11" placeholder="01xxxxxxxxx" oninput="this.value = this.value.replace(/[^0-9]/g, '')" required>
+                    </div>
+
+                    <!-- حقول خاصة بالمعلمين تظهر في تبويب المعلمين فقط -->
+                    <div class="col-md-3 teacher-only-field">
+                        <label class="form-label">المؤهل <span class="text-danger">*</span></label>
+                        <input type="text" id="qualification" class="form-control" placeholder="مثال: بكالوريوس تربية" required>
+                    </div>
+                    <div class="col-md-3 teacher-only-field">
+                        <label class="form-label">الوظيفة <span class="text-danger">*</span></label>
+                        <select id="jobTitle" class="form-select" required>
+                            <option value="" disabled selected>-- اختر الوظيفة --</option>
+                            <option value="معلم مساعد">معلم مساعد</option>
+                            <option value="معلم">معلم</option>
+                            <option value="معلم أول">معلم أول</option>
+                            <option value="معلم أول أ">معلم أول أ</option>
+                            <option value="معلم خبير">معلم خبير</option>
+                            <option value="كبير معلمين">كبير معلمين</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 teacher-only-field">
+                        <label class="form-label">التخصص <span class="text-danger">*</span></label>
+                        <input type="text" id="specialization" class="form-control" placeholder="رياضيات / لغة عربية" required>
+                    </div>
+
+                    <!-- حقل الصف للطلاب بدلاً من المؤهل -->
+                    <div class="col-md-3 student-only-field d-none">
+                        <label class="form-label">الصف <span class="text-danger">*</span></label>
+                        <input type="text" id="studentGrade" class="form-control" placeholder="مثال: الصف الأول الإعدادي" required>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label" id="labelWorkplace">مكان العمل <span class="text-danger">*</span></label>
+                        <input type="text" id="workplace" class="form-control" placeholder="اسم المدرسة أو الجهة" required>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">المرحلة <span class="text-danger">*</span></label>
+                        <select id="stage" class="form-select" required onchange="toggleOtherStage(this)">
+                            <option value="" disabled selected>-- اختر المرحلة --</option>
+                            <option value="ابتدائي">ابتدائي</option>
+                            <option value="إعدادي">إعدادي</option>
+                            <option value="ثانوي">ثانوي</option>
+                            <option value="رياض أطفال">رياض أطفال</option>
+                            <option value="أخرى">أخرى</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 d-none" id="otherStageContainer">
+                        <label class="form-label text-secondary">اكتب المرحلة الأخرى <span class="text-danger">*</span></label>
+                        <input type="text" id="otherStageInput" class="form-control border-secondary" placeholder="اكتب المرحلة التعليمية">
+                    </div>
+
+                    <div class="col-md-3">
+                        <label class="form-label">نوع التعليم <span class="text-danger">*</span></label>
+                        <select id="eduType" class="form-select" required>
+                            <option value="" disabled selected>-- اختر نوع التعليم --</option>
+                            <option value="عام">عام</option>
+                            <option value="فني">فني</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">الادارة <span class="text-danger">*</span></label>
+                        <select id="adminDept" class="form-select" required>
+                            <option value="" disabled selected>-- اختر الإدارة --</option>
+                            <option value="المديرية">المديرية</option>
+                            <option value="إدفو">إدفو</option>
+                            <option value="كوم امبو">كوم امبو</option>
+                            <option value="دراو">دراو</option>
+                            <option value="نصر النوبة">نصر النوبة</option>
+                            <option value="أسوان">أسوان</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">المحافظة <span class="text-danger">*</span></label>
+                        <input type="text" id="governorate" class="form-control" value="أسوان" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">نوع التدريب <span class="text-danger">*</span></label>
+                        <select id="trainType" class="form-select" required onchange="toggleOtherTraining(this)">
+                            <option value="" disabled selected>-- اختر التدريب --</option>
+                            <option value="التدريب على برنامج MOS (إحدى برامج ميكروسوفت)">التدريب على برنامج MOS (إحدى برامج ميكروسوفت)</option>
+                            <option value="التدريب على برنامج (Minecraft) إحدى برامج ميكروسوفت">التدريب على برنامج (Minecraft) إحدى برامج ميكروسوفت</option>
+                            <option value="التدريب على نظام التعليم الجديد للمرحلة الثانوية (المنظومة الحديثة)">التدريب على نظام التعليم الجديد للمرحلة الثانوية (المنظومة الحديثة)</option>
+                            <option value="التدريب على منصة (Cisco) Online">التدريب على منصة (Cisco) Online</option>
+                            <option value="تدريبات على البريد الالكتروني الموحد, واستخدامات Microsoft 365">تدريبات على البريد الالكتروني الموحد, واستخدامات Microsoft 365</option>
+                            <option value="تدريبات وورش عمل مهارات البحث العلمي">تدريبات وورش عمل مهارات البحث العلمي</option>
+                            <option value="البرنامج التدريبي (حماية الطلاب من مخاطر الانترنت)">البرنامج التدريبي (حماية الطلاب من مخاطر الانترنت)</option>
+                            <option value="مسابقة (دوري روبوتات المدارس)">مسابقة (دوري روبوتات المدارس)</option>
+                            <option value="التدريب من خلال المنصات الالكترونية">التدريب من خلال المنصات الالكترونية</option>
+                            <option value="أخرى">أخرى (مع ذكر اسم التدريب)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 d-none" id="otherTrainContainer">
+                        <label class="form-label text-secondary">اكتب اسم التدريب المخصص <span class="text-danger">*</span></label>
+                        <input type="text" id="otherTrainInput" class="form-control border-secondary" placeholder="أدخل اسم التدريب بالتفصيل">
+                    </div>
+
+                    <div class="col-md-4">
+                        <label class="form-label">بداية التدريب <span class="text-danger">*</span></label>
+                        <input type="date" id="startDate" class="form-control" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">نهاية التدريب <span class="text-danger">*</span></label>
+                        <input type="date" id="endDate" class="form-control" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">مكان التدريب <span class="text-danger">*</span></label>
+                        <input type="text" id="trainLocation" class="form-control" placeholder="اسم القاعة أو المركز" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">المدرب <span class="text-danger">*</span></label>
+                        <input type="text" id="trainer" class="form-control" placeholder="اسم المدرب المحاضر" required>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-light px-4 fw-semibold" onclick="resetForm()">
+                        <i class="fa-solid fa-rotate-left me-1"></i> تفريغ الحقول
+                    </button>
+                    <button type="submit" id="submitBtn" class="btn btn-primary-custom shadow-sm">
+                        <i class="fa-solid fa-plus me-1"></i> حفظ البيانات
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- شريط البحث والفلترة -->
+    <div class="card-custom no-print p-3">
+        <div class="row g-2 align-items-center">
+            <div class="col-md-5">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0 text-muted"><i class="fa-solid fa-magnifying-glass"></i></span>
+                    <input type="text" id="searchInput" class="form-control border-start-0 ps-0" placeholder="ابحث بالاسم أو الكود..." onkeyup="filterData()">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select id="filterStage" class="form-select" onchange="filterData()">
+                    <option value="">جميع المراحل التعليمية</option>
+                    <option value="ابتدائي">ابتدائي</option>
+                    <option value="إعدادي">إعدادي</option>
+                    <option value="ثانوي">ثانوي</option>
+                    <option value="رياض أطفال">رياض أطفال</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <select id="filterTraining" class="form-select" onchange="filterData()">
+                    <option value="">جميع أنواع التدريب</option>
+                </select>
+            </div>
+            <div class="col-md-1">
+                <button class="btn btn-outline-secondary w-100" onclick="resetFilters()" title="إعادة ضبط الفلاتر">
+                    <i class="fa-solid fa-filter-circle-xmark"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- جدول عرض البيانات -->
+    <div class="table-responsive">
+        <table class="table custom-table table-hover align-middle" id="recordsTable">
+            <thead>
+                <tr id="tableHeaderRow">
+                    <!-- سيتم تحديث الأعمدة برمجياً حسب التبويب -->
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+        
+        <div id="noDataAlert" class="text-center py-5 d-none">
+            <i class="fa-solid fa-folder-open text-muted fa-3x mb-3"></i>
+            <h5 class="text-muted">لا توجد بيانات مسجلة أو مطابقة لنتائج البحث</h5>
+        </div>
+    </div>
+</div>
+
+<div class="toast-container">
+    <div id="actionToast" class="toast align-items-center text-white bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" id="toastMessage">تمت العملية بنجاح!</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let currentTab = 'teachers'; // 'teachers' or 'students'
+    let recordsData = {
+        teachers: [],
+        students: []
+    };
+    let isEditing = false;
+
+    window.addEventListener('DOMContentLoaded', () => {
+        loadDataFromStorage();
+        updateUITabState();
+        updateFilterDropdowns();
+        filterData();
+        updateStatistics();
+    });
+
+    function switchTab(tabName) {
+        currentTab = tabName;
+        cancelEditing();
+        updateUITabState();
+        updateFilterDropdowns();
+        filterData();
+        updateStatistics();
+    }
+
+    function updateUITabState() {
+        const teachersBtn = document.getElementById('teachersTabBtn');
+        const studentsBtn = document.getElementById('studentsTabBtn');
+        const labelCode = document.getElementById('labelCode');
+        const labelWorkplace = document.getElementById('labelWorkplace');
+        const statTotalLabel = document.getElementById('statTotalLabel');
+        const printTitle = document.getElementById('printSectionTitle');
+        const teacherFields = document.querySelectorAll('.teacher-only-field');
+        const studentFields = document.querySelectorAll('.student-only-field');
+        const tableHeaderRow = document.getElementById('tableHeaderRow');
+
+        if (currentTab === 'teachers') {
+            teachersBtn.classList.add('active');
+            studentsBtn.classList.remove('active');
+            labelCode.innerHTML = 'كود المعلم <span class="text-danger">*</span>';
+            labelWorkplace.textContent = 'مكان العمل';
+            statTotalLabel.textContent = 'إجمالي المتدربين (معلمين)';
+            printTitle.textContent = 'التطوير التكنولوجي - سجلات تدريب المعلمين';
+            
+            teacherFields.forEach(el => el.classList.remove('d-none'));
+            studentFields.forEach(el => el.classList.add('d-none'));
+            document.getElementById('qualification').required = true;
+            document.getElementById('jobTitle').required = true;
+            document.getElementById('specialization').required = true;
+            document.getElementById('studentGrade').required = false;
+
+            tableHeaderRow.innerHTML = `
+                <th style="width: 50px;">م</th>
+                <th>الاسم العربي</th>
+                <th>كود المعلم</th>
+                <th>الوظيفة والتخصص</th>
+                <th>مكان العمل / المرحلة</th>
+                <th>نوع التدريب</th>
+                <th>الفترة التدريبية</th>
+                <th>المدرب</th>
+                <th class="text-center no-print" style="width: 120px;">الإجراءات</th>
+            `;
+        } else {
+            studentsBtn.classList.add('active');
+            teachersBtn.classList.remove('active');
+            labelCode.innerHTML = 'كود الطالب <span class="text-danger">*</span>';
+            labelWorkplace.textContent = 'اسم المدرسة';
+            statTotalLabel.textContent = 'إجمالي المتدربين (طلاب)';
+            printTitle.textContent = 'التطوير التكنولوجي - سجلات تدريب الطلاب';
+            
+            teacherFields.forEach(el => el.classList.add('d-none'));
+            studentFields.forEach(el => el.classList.remove('d-none'));
+            document.getElementById('qualification').required = false;
+            document.getElementById('jobTitle').required = false;
+            document.getElementById('specialization').required = false;
+            document.getElementById('studentGrade').required = true;
+
+            tableHeaderRow.innerHTML = `
+                <th style="width: 50px;">م</th>
+                <th>الاسم العربي</th>
+                <th>كود الطالب</th>
+                <th>الصف</th>
+                <th>اسم المدرسة / المرحلة</th>
+                <th>نوع التدريب</th>
+                <th>الفترة التدريبية</th>
+                <th>المدرب</th>
+                <th class="text-center no-print" style="width: 120px;">الإجراءات</th>
+            `;
+        }
+    }
+
+    function saveDataToStorage() {
+        localStorage.setItem('aswan_training_portal_data', JSON.stringify(recordsData));
+    }
+
+    function loadDataFromStorage() {
+        const stored = localStorage.getItem('aswan_training_portal_data');
+        if (stored) {
+            try { 
+                const parsed = JSON.parse(stored);
+                recordsData.teachers = parsed.teachers || [];
+                recordsData.students = parsed.students || [];
+            } catch(e) { 
+                recordsData = { teachers: [], students: [] }; 
+            }
+        } else {
+            const oldStored = localStorage.getItem('aswan_teachers_data');
+            if (oldStored) {
+                try { recordsData.teachers = JSON.parse(oldStored); } catch(e) {}
+            }
+        }
+    }
+
+    function toggleOtherTraining(selectElement) {
+        const otherContainer = document.getElementById('otherTrainContainer');
+        const otherInput = document.getElementById('otherTrainInput');
+        if (selectElement.value === 'أخرى') {
+            otherContainer.classList.remove('d-none');
+            otherInput.required = true;
+            otherInput.focus();
+        } else {
+            otherContainer.classList.add('d-none');
+            otherInput.required = false;
+            otherInput.value = '';
+        }
+    }
+
+    function toggleOtherStage(selectElement) {
+        const otherContainer = document.getElementById('otherStageContainer');
+        const otherInput = document.getElementById('otherStageInput');
+        if (selectElement.value === 'أخرى') {
+            otherContainer.classList.remove('d-none');
+            otherInput.required = true;
+            otherInput.focus();
+        } else {
+            otherContainer.classList.add('d-none');
+            otherInput.required = false;
+            otherInput.value = '';
+        }
+    }
+
+    document.getElementById('recordForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const enNameInput = document.getElementById('enName').value.trim();
+        if (enNameInput !== "" && !/^[a-zA-Z\s]*$/.test(enNameInput)) {
+            alert("عفواً، يجب كتابة الاسم باللغة الإنجليزية فقط!");
+            document.getElementById('enName').focus();
+            return;
+        }
+
+        const nationalIdVal = document.getElementById('nationalId').value.trim();
+        if (nationalIdVal.length !== 14) {
+            alert('عذراً، يجب أن يتكون الرقم القومي من 14 رقماً بالضبط!');
+            document.getElementById('nationalId').focus();
+            return;
+        }
+
+        const mobileInput = document.getElementById('mobile').value.trim();
+        if (mobileInput.length !== 11) {
+            alert("عفواً، يجب أن يتكون رقم المحمول من 11 رقماً بالضبط!");
+            document.getElementById('mobile').focus();
+            return;
+        }
+
+        const startDateVal = document.getElementById('startDate').value;
+        const endDateVal = document.getElementById('endDate').value;
+        if (startDateVal && endDateVal && endDateVal < startDateVal) {
+            alert("عفواً، لا يمكن أن يكون تاريخ نهاية التدريب قبل تاريخ بدايته!");
+            document.getElementById('endDate').focus();
+            return;
+        }
+
+        const recordCodeVal = document.getElementById('recordCode').value.trim();
+        const rowId = document.getElementById('editRowId').value;
+        const currentId = rowId ? Number(rowId) : null;
+
+        let finalStage = document.getElementById('stage').value;
+        if (finalStage === 'أخرى') {
+            const customStageVal = document.getElementById('otherStageInput').value.trim();
+            if (!customStageVal) {
+                alert("يرجى كتابة اسم المرحلة الأخرى في الحقل الظاهر!");
+                document.getElementById('otherStageInput').focus();
+                return;
+            }
+            finalStage = customStageVal;
+        }
+
+        let finalTrainType = document.getElementById('trainType').value;
+        if (finalTrainType === 'أخرى') {
+            const customVal = document.getElementById('otherTrainInput').value.trim();
+            if (!customVal) {
+                alert("يرجى كتابة اسم التدريب المخصص في الحقل الظاهر!");
+                document.getElementById('otherTrainInput').focus();
+                return;
+            }
+            finalTrainType = customVal;
+        }
+
+        const recordId = currentId ? currentId : Date.now();
+
+        const formData = {
+            id: recordId,
+            arName: document.getElementById('arName').value.trim(),
+            enName: enNameInput,
+            recordCode: recordCodeVal,
+            gender: document.getElementById('gender').value,
+            nationalId: nationalIdVal,
+            email: document.getElementById('email').value.trim(),
+            mobile: mobileInput,
+            qualification: currentTab === 'teachers' ? document.getElementById('qualification').value.trim() : document.getElementById('studentGrade').value.trim(),
+            jobTitle: currentTab === 'teachers' ? document.getElementById('jobTitle').value : '',
+            specialization: currentTab === 'teachers' ? document.getElementById('specialization').value.trim() : '',
+            workplace: document.getElementById('workplace').value.trim(),
+            stage: finalStage,
+            eduType: document.getElementById('eduType').value,
+            adminDept: document.getElementById('adminDept').value,
+            governorate: document.getElementById('governorate').value.trim(),
+            trainType: finalTrainType,
+            startDate: startDateVal,
+            endDate: endDateVal,
+            trainLocation: document.getElementById('trainLocation').value.trim(),
+            trainer: document.getElementById('trainer').value.trim()
+        };
+
+        let targetList = recordsData[currentTab];
+
+        if (isEditing && currentId) {
+            const index = targetList.findIndex(t => t.id === currentId);
+            if (index !== -1) {
+                targetList[index] = formData;
+                showToast('تم تحديث البيانات بنجاح!');
+            } else {
+                targetList.unshift(formData);
+                showToast('تمت إضافة السجل بنجاح!');
+            }
+            cancelEditing();
+        } else {
+            targetList.unshift(formData);
+            showToast('تمت إضافة السجل بنجاح!');
+            resetForm();
+        }
+
+        saveDataToStorage();
+        updateFilterDropdowns();
+        filterData();
+        updateStatistics();
+    });
+
+    function renderTable(dataList) {
+        const tbody = document.getElementById('tableBody');
+        const noData = document.getElementById('noDataAlert');
+        tbody.innerHTML = '';
+
+        if (dataList.length === 0) {
+            noData.classList.remove('d-none');
+            return;
+        } else {
+            noData.classList.add('d-none');
+        }
+
+        dataList.forEach((item, index) => {
+            const tr = document.createElement('tr');
+            if (currentTab === 'teachers') {
+                tr.innerHTML = `
+                    <td class="fw-bold text-muted">${index + 1}</td>
+                    <td>
+                        <div class="fw-bold text-dark">${item.arName}</div>
+                        ${item.enName ? `<div class="fs-7 text-muted">${item.enName}</div>` : ''}
+                    </td>
+                    <td><span class="badge bg-light text-dark border fw-mono fs-7">${item.recordCode}</span></td>
+                    <td>
+                        <div>${item.jobTitle || '-'}</div>
+                        <small class="text-muted">${item.specialization || '-'}</small>
+                    </td>
+                    <td>
+                        <div>${item.workplace || '-'}</div>
+                        <span class="badge badge-stage mt-1">${item.stage}</span>
+                    </td>
+                    <td>
+                        <span class="badge badge-type">${item.trainType}</span>
+                        ${item.trainLocation ? `<div class="fs-7 text-muted mt-1"><i class="fa-solid fa-location-dot me-1"></i>${item.trainLocation}</div>` : ''}
+                    </td>
+                    <td>
+                        <div class="fs-7"><i class="fa-regular fa-calendar me-1"></i>${item.startDate || '-'}</div>
+                        ${item.endDate ? `<div class="fs-7 text-muted"><i class="fa-regular fa-calendar-check me-1"></i>${item.endDate}</div>` : ''}
+                    </td>
+                    <td>${item.trainer || '-'}</td>
+                    <td class="text-center no-print">
+                        <button class="btn btn-sm btn-outline-primary me-1" onclick="startEditing(${item.id})" title="تعديل"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteRecord(${item.id})" title="حذف"><i class="fa-solid fa-trash-can"></i></button>
+                    </td>
+                `;
+            } else {
+                tr.innerHTML = `
+                    <td class="fw-bold text-muted">${index + 1}</td>
+                    <td>
+                        <div class="fw-bold text-dark">${item.arName}</div>
+                        ${item.enName ? `<div class="fs-7 text-muted">${item.enName}</div>` : ''}
+                    </td>
+                    <td><span class="badge bg-light text-dark border fw-mono fs-7">${item.recordCode}</span></td>
+                    <td>
+                        <div class="fw-bold text-primary">${item.qualification || '-'}</div>
+                    </td>
+                    <td>
+                        <div>${item.workplace || '-'}</div>
+                        <span class="badge badge-stage mt-1">${item.stage}</span>
+                    </td>
+                    <td>
+                        <span class="badge badge-type">${item.trainType}</span>
+                        ${item.trainLocation ? `<div class="fs-7 text-muted mt-1"><i class="fa-solid fa-location-dot me-1"></i>${item.trainLocation}</div>` : ''}
+                    </td>
+                    <td>
+                        <div class="fs-7"><i class="fa-regular fa-calendar me-1"></i>${item.startDate || '-'}</div>
+                        ${item.endDate ? `<div class="fs-7 text-muted"><i class="fa-regular fa-calendar-check me-1"></i>${item.endDate}</div>` : ''}
+                    </td>
+                    <td>${item.trainer || '-'}</td>
+                    <td class="text-center no-print">
+                        <button class="btn btn-sm btn-outline-primary me-1" onclick="startEditing(${item.id})" title="تعديل"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteRecord(${item.id})" title="حذف"><i class="fa-solid fa-trash-can"></i></button>
+                    </td>
+                `;
+            }
+            tbody.appendChild(tr);
+        });
+    }
+
+    function startEditing(id) {
+        const list = recordsData[currentTab];
+        const record = list.find(t => t.id === id);
+        if (!record) return;
+
+        isEditing = true;
+        document.getElementById('editRowId').value = record.id;
+        document.getElementById('arName').value = record.arName || '';
+        document.getElementById('enName').value = record.enName || '';
+        document.getElementById('recordCode').value = record.recordCode || '';
+        document.getElementById('gender').value = record.gender || '';
+        document.getElementById('nationalId').value = record.nationalId || '';
+        document.getElementById('email').value = record.email || '';
+        document.getElementById('mobile').value = record.mobile || '';
+        
+        if (currentTab === 'teachers') {
+            document.getElementById('qualification').value = record.qualification || '';
+            document.getElementById('jobTitle').value = record.jobTitle || '';
+            document.getElementById('specialization').value = record.specialization || '';
+        } else {
+            document.getElementById('studentGrade').value = record.qualification || '';
+        }
+
+        document.getElementById('workplace').value = record.workplace || '';
+        document.getElementById('eduType').value = record.eduType || '';
+        document.getElementById('adminDept').value = record.adminDept || '';
+        document.getElementById('governorate').value = record.governorate || 'أسوان';
+        
+        const stageSelect = document.getElementById('stage');
+        let stageOptionExists = Array.from(stageSelect.options).some(opt => opt.value === record.stage);
+        if (stageOptionExists) {
+            stageSelect.value = record.stage;
+            document.getElementById('otherStageContainer').classList.add('d-none');
+            document.getElementById('otherStageInput').value = '';
+        } else {
+            stageSelect.value = 'أخرى';
+            document.getElementById('otherStageContainer').classList.remove('d-none');
+            document.getElementById('otherStageInput').value = record.stage;
+        }
+
+        const trainSelect = document.getElementById('trainType');
+        let optionExists = Array.from(trainSelect.options).some(opt => opt.value === record.trainType);
+        if (optionExists) {
+            trainSelect.value = record.trainType;
+            document.getElementById('otherTrainContainer').classList.add('d-none');
+            document.getElementById('otherTrainInput').value = '';
+        } else {
+            trainSelect.value = 'أخرى';
+            document.getElementById('otherTrainContainer').classList.remove('d-none');
+            document.getElementById('otherTrainInput').value = record.trainType;
+        }
+
+        document.getElementById('startDate').value = record.startDate || '';
+        document.getElementById('endDate').value = record.endDate || '';
+        document.getElementById('trainLocation').value = record.trainLocation || '';
+        document.getElementById('trainer').value = record.trainer || '';
+
+        const formCard = document.getElementById('formCard');
+        formCard.classList.add('editing-mode');
+        document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-pen-to-square me-2 text-warning"></i>تعديل البيانات: ${record.arName}`;
+        
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.className = 'btn btn-update-custom shadow-sm';
+        submitBtn.innerHTML = `<i class="fa-solid fa-rotate me-1"></i> تحديث البيانات`;
+        document.getElementById('cancelEditBtn').classList.remove('d-none');
+        formCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function cancelEditing() {
+        isEditing = false;
+        resetForm();
+        const formCard = document.getElementById('formCard');
+        formCard.classList.remove('editing-mode');
+        document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-user-plus me-2 text-primary"></i>إضافة سجل تدريب جديد`;
+        document.getElementById('submitBtn').className = 'btn btn-primary-custom shadow-sm';
+        document.getElementById('submitBtn').innerHTML = `<i class="fa-solid fa-plus me-1"></i> حفظ البيانات`;
+        document.getElementById('cancelEditBtn').classList.add('d-none');
+    }
+
+    function resetForm() {
+        document.getElementById('recordForm').reset();
+        document.getElementById('editRowId').value = '';
+        document.getElementById('governorate').value = 'أسوان';
+        document.getElementById('otherTrainContainer').classList.add('d-none');
+        document.getElementById('otherStageContainer').classList.add('d-none');
+    }
+
+    function deleteRecord(id) {
+        if (confirm('هل أنت متأكد من إزالة هذا السجل؟')) {
+            recordsData[currentTab] = recordsData[currentTab].filter(t => t.id !== id);
+            saveDataToStorage();
+            updateFilterDropdowns();
+            filterData();
+            updateStatistics();
+            showToast('تم حذف السجل بنجاح');
+            if (isEditing && document.getElementById('editRowId').value == id) {
+                cancelEditing();
+            }
+        }
+    }
+
+    function clearAllData() {
+        const listName = currentTab === 'teachers' ? 'المعلمين' : 'الطلاب';
+        if (recordsData[currentTab].length === 0) {
+            alert('لا توجد بيانات أساساً لحذفها في هذا القسم!');
+            return;
+        }
+        if (confirm(`تحذير شديد: هل أنت متأكد تماماً من رغبتك في حذف جميع سجلات (${listName}) نهائياً؟`)) {
+            recordsData[currentTab] = [];
+            saveDataToStorage();
+            updateFilterDropdowns();
+            filterData();
+            updateStatistics();
+            cancelEditing();
+            showToast('تم إفراغ كافة السجلات بنجاح');
+        }
+    }
+
+    function importFromExcel(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+                const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+                if (jsonData.length === 0) {
+                    alert('ملف الإكسل فارغ أو غير ممتلئ بالبيانات المطلوبة!');
+                    return;
+                }
+
+                let addedCount = 0;
+                let targetList = recordsData[currentTab];
+
+                jsonData.forEach(row => {
+                    const arName = row["الاسم العربي"] || row["الاسم"] || '';
+                    const recordCode = String(row["كود المعلم"] || row["كود الطالب"] || row["الكود"] || '').trim();
+
+                    if (!arName || !recordCode) return;
+
+                    const newRecord = {
+                        id: Date.now() + Math.random(),
+                        arName: arName,
+                        enName: row["English Name"] || row["الاسم بالإنجليزية"] || '',
+                        recordCode: recordCode,
+                        gender: row["النوع\n"] || row["النوع"] || 'ذكر',
+                        nationalId: String(row["الرقم القومي"] || row["الرقم القومى"] || '').trim(),
+                        email: row["البريد الالكتروني"] || row["البريد الإلكتروني"] || '',
+                        mobile: String(row["المحمول"] || row["رقم المحمول"] || '').trim(),
+                        qualification: row["المؤهل"] || row["الصف"] || '',
+                        jobTitle: row["الوظيفة"] || '',
+                        specialization: row["التخصص"] || '',
+                        workplace: row["مكان العمل"] || row["اسم المدرسة"] || '',
+                        stage: row["المرحلة "] || row["المرحلة"] || 'ابتدائي',
+                        eduType: row["نوع التعليم\n"] || row["نوع التعليم"] || 'عام',
+                        adminDept: row["الادارة"] || row["الإدارة"] || 'إدفو',
+                        governorate: row["المحافظة"] || 'أسوان',
+                        trainType: row["نوع التدريب"] || 'تدريب عام',
+                        startDate: row["بداية التدريب"] ? String(row["بداية التدريب"]).slice(0, 10) : '',
+                        endDate: row["نهاية التدريب"] ? String(row["نهاية التدريب"]).slice(0, 10) : '',
+                        trainLocation: row["مكان التدريب"] || '',
+                        trainer: row["المدرب"] || ''
+                    };
+
+                    targetList.unshift(newRecord);
+                    addedCount++;
+                });
+
+                saveDataToStorage();
+                updateFilterDropdowns();
+                filterData();
+                updateStatistics();
+                
+                showToast(`تم استيراد ${addedCount} سجل بنجاح!`);
+
+            } catch (error) {
+                console.error(error);
+                alert('حدث خطأ أثناء قراءة ملف الإكسل. تأكد من صحة تنسيق الملف.');
+            }
+            event.target.value = '';
+        };
+        reader.readAsArrayBuffer(file);
+    }
+
+    function exportBackupJSON() {
+        if (recordsData.teachers.length === 0 && recordsData.students.length === 0) {
+            alert('لا توجد بيانات لحفظها كنسخة احتياطية!');
+            return;
+        }
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(recordsData, null, 2));
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute("href", dataStr);
+        downloadAnchor.setAttribute("download", `Backup_Training_Portal_${new Date().toISOString().slice(0,10)}.json`);
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+        showToast('تم حفظ ملف النسخة الاحتياطية بنجاح!');
+    }
+
+    function importBackupJSON(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const importedData = JSON.parse(e.target.result);
+                if (importedData && (importedData.teachers || importedData.students)) {
+                    if (confirm(`سيتم استرجاع البيانات الكاملة للمنظومة. هل تريد المتابعة؟`)) {
+                        recordsData.teachers = importedData.teachers || [];
+                        recordsData.students = importedData.students || [];
+                        saveDataToStorage();
+                        updateFilterDropdowns();
+                        filterData();
+                        updateStatistics();
+                        showToast('تم استرجاع البيانات بنجاح!');
+                    }
+                } else {
+                    alert('ملف النسخة الاحتياطية غير صالح!');
+                }
+            } catch (error) {
+                alert('حدث خطأ أثناء قراءة الملف!');
+            }
+            event.target.value = '';
+        };
+        reader.readAsText(file);
+    }
+
+    function filterData() {
+        const searchValue = document.getElementById('searchInput').value.toLowerCase().trim();
+        const stageValue = document.getElementById('filterStage').value;
+        const trainingValue = document.getElementById('filterTraining').value;
+
+        const list = recordsData[currentTab];
+        const filtered = list.filter(item => {
+            const matchesSearch = item.arName.toLowerCase().includes(searchValue) ||
+                                  (item.enName && item.enName.toLowerCase().includes(searchValue)) ||
+                                  item.recordCode.toLowerCase().includes(searchValue);
+            const matchesStage = stageValue === '' || item.stage === stageValue;
+            const matchesTraining = trainingValue === '' || item.trainType === trainingValue;
+            return matchesSearch && matchesStage && matchesTraining;
+        });
+
+        renderTable(filtered);
+    }
+
+    function resetFilters() {
+        document.getElementById('searchInput').value = '';
+        document.getElementById('filterStage').value = '';
+        document.getElementById('filterTraining').value = '';
+        filterData();
+    }
+
+    function updateFilterDropdowns() {
+        const select = document.getElementById('filterTraining');
+        const currentVal = select.value;
+        const list = recordsData[currentTab];
+        const trainTypes = [...new Set(list.map(t => t.trainType).filter(Boolean))];
+
+        select.innerHTML = '<option value="">جميع أنواع التدريب</option>';
+        trainTypes.forEach(type => {
+            const option = document.createElement('option');
+            option.value = type;
+            option.textContent = type;
+            select.appendChild(option);
+        });
+        select.value = currentVal;
+    }
+
+    function updateStatistics() {
+        const list = recordsData[currentTab];
+        document.getElementById('statTotal').textContent = list.length;
+        const males = list.filter(t => t.gender === 'ذكر').length;
+        const females = list.filter(t => t.gender === 'أنثى').length;
+        document.getElementById('statGender').textContent = `${males} / ${females}`;
+        document.getElementById('statPrograms').textContent = new Set(list.map(t => t.trainType)).size;
+        document.getElementById('statSchools').textContent = new Set(list.map(t => t.workplace).filter(Boolean)).size;
+    }
+
+    function preparePrint() {
+        document.getElementById('printDate').textContent = new Date().toLocaleDateString('ar-EG');
+        window.print();
+    }
+
+    function exportToExcel() {
+        const list = recordsData[currentTab];
+        if (list.length === 0) {
+            alert('لا توجد بيانات لتصديرها في هذا القسم!');
+            return;
+        }
+
+        const isTeacher = currentTab === 'teachers';
+        const formattedData = list.map((item, idx) => {
+            let baseObj = {
+                "م": idx + 1,
+                "الاسم العربي": item.arName,
+                "English Name": item.enName || '',
+                [isTeacher ? "كود المعلم" : "كود الطالب"]: item.recordCode,
+                "النوع\n": item.gender,
+                "الرقم القومي": item.nationalId || '',
+                "البريد الالكتروني": item.email || '',
+                "المحمول": item.mobile || ''
+            };
+
+            if (isTeacher) {
+                baseObj["المؤهل"] = item.qualification || '';
+                baseObj["الوظيفة"] = item.jobTitle || '';
+                baseObj["التخصص"] = item.specialization || '';
+            } else {
+                baseObj["الصف"] = item.qualification || '';
+            }
+
+            baseObj[isTeacher ? "مكان العمل" : "اسم المدرسة"] = item.workplace || '';
+            baseObj["المرحلة "] = item.stage;
+            baseObj["نوع التعليم\n"] = item.eduType;
+            baseObj["الادارة"] = item.adminDept;
+            baseObj["المحافظة"] = item.governorate;
+            baseObj["نوع التدريب"] = item.trainType;
+            baseObj["بداية التدريب"] = item.startDate ? String(item.startDate) : '';
+            baseObj["نهاية التدريب"] = item.endDate ? String(item.endDate) : '';
+            baseObj["مكان التدريب"] = item.trainLocation || '';
+            baseObj["المدرب"] = item.trainer || '';
+
+            return baseObj;
+        });
+
+        const worksheet = XLSX.utils.json_to_sheet(formattedData);
+        const workbook = XLSX.utils.book_new();
+        const sheetName = isTeacher ? "تدريب_المعلمين" : "تدريب_الطلاب";
+        XLSX.utils.book_append_sheet(workbook, worksheet, sheetName);
+
+        let workplaceName = isTeacher ? "تقرير_تدريب_المعلمين" : "تقرير_تدريب_الطلاب";
+        if (list.length > 0 && list[0].workplace) {
+            workplaceName = list[0].workplace.trim().replace(/[\\/:*?"<>|]/g, '_');
+        }
+
+        const currentDate = new Date().toISOString().slice(0, 10);
+        const fileName = `${workplaceName}_${currentDate}.xlsx`;
+
+        XLSX.writeFile(workbook, fileName);
+    }
+
+    function showToast(message) {
+        document.getElementById('toastMessage').textContent = message;
+        const toastEl = document.getElementById('actionToast');
+        const toast = new bootstrap.Toast(toastEl, { delay: 3000 });
+        toast.show();
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
